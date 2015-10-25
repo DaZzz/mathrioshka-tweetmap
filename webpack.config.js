@@ -10,6 +10,9 @@ var config = {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js'
   },
+  resolve: {
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.styl']
+  },
   module: {
     loaders: [
       {
@@ -19,11 +22,11 @@ var config = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css'
+        loader: 'style!css!autoprefixer'
       },
       {
         test: /\.styl$/,
-        loader: 'style!css!stylus'
+        loader: 'style!css!autoprefixer!stylus'
       }
     ]
   }
