@@ -11,7 +11,7 @@ var config = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.styl']
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.styl', '.csv']
   },
   module: {
     loaders: [
@@ -27,6 +27,10 @@ var config = {
       {
         test: /\.styl$/,
         loader: 'style!css!autoprefixer!stylus'
+      },
+      {
+        test: /\.csv$/,
+        loader: 'file-loader'
       }
     ]
   }
