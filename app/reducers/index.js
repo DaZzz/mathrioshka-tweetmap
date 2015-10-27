@@ -1,6 +1,17 @@
+import d3 from 'd3'
 import { combineReducers } from 'redux'
-import { REQUEST_TWEETS, RECEIVE_TWEETS, REMOVE_TWEETS } from '../actions'
+import { REQUEST_TWEETS, RECEIVE_TWEETS, REMOVE_TWEETS, SET_BOUNDS } from '../actions'
 
+function bounds(state = [], action) {
+  switch (action.type) {
+  case RECEIVE_TWEETS:
+    return d3.extent(action.tweets.map((d) => d.date))
+  case SET_BOUNDS:
+    return action.bounds
+  default:
+    return state
+  }
+}
 
 function tweets(state = {
   isFetching: false, 
@@ -27,5 +38,6 @@ function tweets(state = {
 
 
 export default combineReducers({
-  tweets
+  tweets,
+  bounds
 })

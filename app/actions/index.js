@@ -17,7 +17,6 @@ function receiveTweets(tweets) {
 }
 
 export function fetchTweets() {
-
   return (dispatch) => {
     dispatch(requestTweets())
 
@@ -35,7 +34,8 @@ export function fetchTweets() {
 
     // Usualy they return promise here
     dsv(DATA, parseRow, (error, tweets) => {
-      dispatch(receiveTweets(tweets))
+      let sortedTweets = tweets.sort((a, b) => a.date - b.date)
+      dispatch(receiveTweets(sortedTweets))
     })
   }
 }
@@ -43,6 +43,14 @@ export function fetchTweets() {
 export const REMOVE_TWEETS = 'REMOVE_TWEETS'
 export function removeTweets() {
   return {
-    type: REMOVE_TWEETS
+    type: REMOVE_TWEETS,
+  }
+}
+
+export const SET_BOUNDS = 'SET_BOUNDS'
+export function setBounds(bounds) {
+  return {
+    type: SET_BOUNDS,
+    bounds,
   }
 }
