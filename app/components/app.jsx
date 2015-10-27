@@ -1,6 +1,7 @@
 // Write your main app javascript here
 
 import React from 'react'
+import ReactDOM from 'react-dom'
 import TweetMap from './tweet-map'
 
 let App = React.createClass({
@@ -14,7 +15,7 @@ let App = React.createClass({
 
 })
 
-React.render(
+ReactDOM.render(
   <App/>,
   document.getElementById('app')
 )

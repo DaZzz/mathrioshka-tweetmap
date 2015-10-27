@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import d3 from 'd3'
 import DATA from '../assets/data.csv'
 let GoogleMaps = window.google.maps
@@ -45,9 +46,9 @@ let TweetMap = React.createClass({
   },
 
   initMap(data) {
-    let container = React.findDOMNode(this.refs.mapContainer)
+    let container = ReactDOM.findDOMNode(this.refs.mapContainer)
     let map = new GoogleMaps.Map(container, {
-      center: {lat: -34.397, lng: 150.644},
+      center: {lat: 55.75222, lng: 37.61556},
       zoom: 8,
       styles: [{
         stylers: [{
@@ -73,8 +74,6 @@ let TweetMap = React.createClass({
         let projection = this.getProjection()
         let marker = layer.selectAll("svg")
             .data(data)
-
-        console.log('redraw')
 
         // Enter
         let markerEnter = marker
@@ -105,7 +104,6 @@ let TweetMap = React.createClass({
       }
     }
 
-    // console.log(map)
     overlay.setMap(map)
   },
 
