@@ -5,4 +5,35 @@ html, body, #app, .tweet-map-application
   height 100%  
   margin 0
   padding 0 
+
+.tweet-map-application
+  position relative
   
+  .button
+    position absolute
+    display block
+    top 40px
+    right 40px 
+    appearance none
+    background red
+    color white
+    width 150px
+    padding 10px 0px 
+    border none
+    font-size 24px
+    border-radius 2px
+    box-shadow 0 0px 1px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.12)
+    cursor pointer
+    
+    &:focus, &:active
+      appearance none
+      border none
+      outline none
+    
+    &:hover 
+      box-shadow 0 0px 1px rgba(0,0,0,0.24), 0 1px 10px rgba(0,0,0,0.48)
+    
+    &:active
+      background #E00 
+
+

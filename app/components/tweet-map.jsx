@@ -9,13 +9,18 @@ let TweetMap = React.createClass({
   getInitialState() {
     return {
       map: null,
-      data: null
+      overlay: null
     }
   },
 
   componentDidMount() {
-    this.loadData()
-    // this.initMap()
+    this.initMap()
+  },
+
+  componentDidUpdate() {
+    if (this.state.overlay && this.state.overlay.draw) {
+      this.state.overlay.draw()
+    }
   },
 
   render() {
@@ -23,26 +28,6 @@ let TweetMap = React.createClass({
       <div ref='mapContainer' className='tweet-map'>
       </div>
     )
-  },
-
-  loadData() {
-    let dsv = d3.dsv(';', 'text/plain')
-
-    dsv(DATA, this.parseRow, (error, data) => {
-      this.setState({data})
-      this.initMap(data)
-    })
-  },
-
-  parseRow(d) {
-    let tweet = {}
-
-    tweet.isCenter = d.center == '1'
-    tweet.date = d3.time.format('%d.%m.%Y').parse(d.date)
-    tweet.lng = +(d.long.replace(',', '.'))
-    tweet.lat = +(d.lat.replace(',', '.'))
-
-    return tweet
   },
 
   initMap(data) {
@@ -58,12 +43,12 @@ let TweetMap = React.createClass({
     })
 
     this.setState({map})
-    this.initOverlay(map, data)
+    this.initOverlay(map)
   },
 
   initOverlay(map, data) {
     let overlay = new GoogleMaps.OverlayView()
-    // let data = this.state.data
+    let _this = this
 
     overlay.onAdd = function () {
       let layer = d3.select(this.getPanes().overlayLayer)
@@ -72,8 +57,8 @@ let TweetMap = React.createClass({
 
       overlay.draw = function () {
         let projection = this.getProjection()
-        let marker = layer.selectAll("svg")
-            .data(data)
+        let marker = layer.selectAll('svg')
+            .data(_this.props.tweets)
 
         // Enter
         let markerEnter = marker
@@ -96,7 +81,6 @@ let TweetMap = React.createClass({
         function transform(d) {
           d = new GoogleMaps.LatLng(d.lat, d.lng)
           d = projection.fromLatLngToDivPixel(d)
-          // console.log(d)
           return d3.select(this)
               .style('left', d.x + 'px')
               .style('top', d.y + 'px');
@@ -105,6 +89,7 @@ let TweetMap = React.createClass({
     }
 
     overlay.setMap(map)
+    this.setState({overlay})
   },
 
 
