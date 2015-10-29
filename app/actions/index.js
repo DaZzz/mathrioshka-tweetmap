@@ -40,13 +40,6 @@ export function fetchTweets() {
   }
 }
 
-export const REMOVE_TWEETS = 'REMOVE_TWEETS'
-export function removeTweets() {
-  return {
-    type: REMOVE_TWEETS,
-  }
-}
-
 export const SET_BOUNDS = 'SET_BOUNDS'
 export function setBounds(bounds) {
   return {

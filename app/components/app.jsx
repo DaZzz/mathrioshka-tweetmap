@@ -19,10 +19,6 @@ let App = React.createClass({
       <div className='tweet-map-application'>
         <TweetMap tweets={tweets.all} bounds={bounds}/>
         <TweetBrush tweets={tweets.byDate} onBrushChange={(bounds) => dispatch(setBounds(bounds))}/>
-
-        <button className='button remove-data' onClick={() => dispatch(removeTweets())}>
-          Remove
-        </button>
       </div>    
     )
   },
