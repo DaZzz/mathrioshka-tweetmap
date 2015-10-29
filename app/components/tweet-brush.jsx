@@ -9,7 +9,7 @@ let TweetBrush = React.createClass({
   },
 
   componentDidUpdate() {
-    this.domainUpdate()
+    this.componentUpdate()
   },
 
   render() {
@@ -28,7 +28,7 @@ let TweetBrush = React.createClass({
 
     let brush = d3.svg.brush()
       .x(x)
-      .on('brush', this.redrawBrush)
+      .on('brush', this.onBrush)
 
     let context = d3.select(container).append('svg')
       .attr('class', 'brush-context')
@@ -39,12 +39,12 @@ let TweetBrush = React.createClass({
     this.setState({context, brush, container, x, y, width, height})
   },
 
-  redrawBrush() {
+  onBrush() {
     let { brush } = this.state
     this.props.onBrushChange(brush.extent())
   },
 
-  domainUpdate() {
+  componentUpdate() {
     let {context, brush, container, x, y, width, height} = this.state
     let data = this.props.tweets
     x.domain(d3.extent(data.map( (d) => d.date )))

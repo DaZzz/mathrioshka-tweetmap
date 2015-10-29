@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import d3 from 'd3'
+import _ from 'lodash'
 import DATA from '../assets/data.csv'
 let GoogleMaps = window.google.maps
 
@@ -57,8 +58,15 @@ let TweetMap = React.createClass({
 
       overlay.draw = function () {
         let projection = this.getProjection()
+        let data = _this.props.tweets 
+
+        if (_this.props.bounds.length > 0) {
+          data =_.filter(_this.props.tweets, 
+                 (d) => (d.date >=_this.props.bounds[0] && d.date <=_this.props.bounds[1]))
+        }
+
         let marker = layer.selectAll('svg')
-            .data(_this.props.tweets)
+            .data(data, (d) => d.lat)
 
         // Enter
         let markerEnter = marker
@@ -68,22 +76,35 @@ let TweetMap = React.createClass({
             .each(transform)
 
         markerEnter.append('svg:circle')
-          .attr('r', 5)
-          .attr('cx', 5)
-          .attr('cy', 5)
+          .attr('r', 0)
+          .attr('cx', 10)
+          .attr('cy', 10)
+          .style('fill', (d) => d.isCenter ? 'blue' : 'red')
+          .transition()
+            .duration(400)
+            .attr('r', 10)
 
         // Update 
         marker.each(transform)
 
         // Remove
-        marker.exit().remove()
+        marker.exit()
+          .select('circle')
+            .transition()
+            .duration(400)
+            .attr('r', 0)
+        
+        marker.exit()
+          .transition()
+          .duration(400)
+          .remove()
 
         function transform(d) {
           d = new GoogleMaps.LatLng(d.lat, d.lng)
           d = projection.fromLatLngToDivPixel(d)
           return d3.select(this)
-              .style('left', d.x + 'px')
-              .style('top', d.y + 'px');
+              .style('left', d.x - 10 + 'px')
+              .style('top', d.y - 10 + 'px');
         }
       }
     }
