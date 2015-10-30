@@ -84,22 +84,28 @@ let TweetMap = React.createClass({
           .attr('cy', 0)
           .style('fill', (d) => d.isCenter ? 'blue' : 'red')
           .transition()
-            .duration(10)
+            .duration(1)
           .each('end', function (d) {
             d3.select(this).attr('class', 'enter')
           })
 
         // Update 
-        marker.each(transform)
+        marker
+          .each(transform)
+          .transition()
+
+        marker.select('circle')
+          .transition()
+          .attr('class', 'enter')
 
         // Remove
         marker.exit()
           .select('circle')
-            .attr('class', '')
+          .attr('class', '')
+          .transition()
         
         marker.exit()
           .transition()
-          .duration(400)
           .remove()
 
         function transform(d) {

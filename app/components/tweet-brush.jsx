@@ -38,8 +38,14 @@ let TweetBrush = React.createClass({
     let chart1 = context.append('g')
       .append('path')
       .attr('class', 'chart-1')
-      .style('fill', 'none')
+      .style('fill', 'rgba(0,0,255,0.2)')
       .style('stroke', 'blue')
+
+    let chart2 = context.append('g')
+      .append('path')
+      .attr('class', 'chart-2')
+      .style('fill', 'rgba(255,0,0,0.2)')
+      .style('stroke', 'red')
 
     // Brush
     context.append('g')
@@ -59,13 +65,24 @@ let TweetBrush = React.createClass({
     x.domain(d3.extent(data, (d) => d.date))
     y.domain(d3.extent(data, (d) => d.center))
 
-    let line = d3.svg.line()
+    let area1 = d3.svg.area()
       .x((d) => x(d.date))
-      .y((d) => y(d.center))
+      .y1((d) => y(d.center))
+      .y0(height * 0.5)
+
+    let area2 = d3.svg.area()
+      .x((d) => x(d.date))
+      .y1((d) => height - y(d.periphery))
+      .y0(height * 0.5) 
 
     context.select('.chart-1')
       .datum(data)
-      .attr('d', line)
+      .attr('d', area1)
+
+    context.select('.chart-2')
+      .datum(data)
+      .transition()
+      .attr('d', area2)
 
     context.select('g.brush')
         .call(brush)
