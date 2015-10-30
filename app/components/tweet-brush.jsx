@@ -24,15 +24,24 @@ let TweetBrush = React.createClass({
     let [width, height] = [container.offsetWidth, container.offsetHeight]
 
     let x = d3.time.scale().range([0, width])
-    let y = d3.scale.linear().range([height, 0])
+    let y = d3.scale.linear().range([height * 0.5, 0])
 
     let brush = d3.svg.brush()
       .x(x)
       .on('brush', this.onBrush)
+      .on('brushend', this.onBrush)
 
     let context = d3.select(container).append('svg')
       .attr('class', 'brush-context')
 
+    // Chart 1
+    let chart1 = context.append('g')
+      .append('path')
+      .attr('class', 'chart-1')
+      .style('fill', 'none')
+      .style('stroke', 'blue')
+
+    // Brush
     context.append('g')
       .attr('class', 'brush')
 
@@ -47,7 +56,17 @@ let TweetBrush = React.createClass({
   componentUpdate() {
     let {context, brush, container, x, y, width, height} = this.state
     let data = this.props.tweets
-    x.domain(d3.extent(data.map( (d) => d.date )))
+    x.domain(d3.extent(data, (d) => d.date))
+    y.domain(d3.extent(data, (d) => d.center))
+
+    let line = d3.svg.line()
+      .x((d) => x(d.date))
+      .y((d) => y(d.center))
+
+    context.select('.chart-1')
+      .datum(data)
+      .attr('d', line)
+
     context.select('g.brush')
         .call(brush)
       .selectAll('rect')

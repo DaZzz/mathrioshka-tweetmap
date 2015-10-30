@@ -73,16 +73,21 @@ let TweetMap = React.createClass({
             .enter()
           .append('svg:svg')
             .attr('class', 'marker')
+            .attr('width', 20)
+            .attr('height', 20)
+            .style('padding', '10px')
             .each(transform)
 
         markerEnter.append('svg:circle')
-          .attr('r', 0)
-          .attr('cx', 10)
-          .attr('cy', 10)
+          .attr('r', 10)
+          .attr('cx', 0)
+          .attr('cy', 0)
           .style('fill', (d) => d.isCenter ? 'blue' : 'red')
           .transition()
-            .duration(400)
-            .attr('r', 10)
+            .duration(10)
+          .each('end', function (d) {
+            d3.select(this).attr('class', 'enter')
+          })
 
         // Update 
         marker.each(transform)
@@ -90,9 +95,7 @@ let TweetMap = React.createClass({
         // Remove
         marker.exit()
           .select('circle')
-            .transition()
-            .duration(400)
-            .attr('r', 0)
+            .attr('class', '')
         
         marker.exit()
           .transition()
