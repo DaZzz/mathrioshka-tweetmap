@@ -66,7 +66,7 @@ let TweetMap = React.createClass({
         }
 
         let marker = layer.selectAll('svg')
-            .data(data, (d) => d.lat)
+            .data(data, (d) => d.id)
 
         // Enter
         let markerEnter = marker

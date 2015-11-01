@@ -23,13 +23,14 @@ export function fetchTweets() {
     dispatch(requestTweets())
 
     let dsv = d3.dsv(';', 'text/plain')
-    let parseRow = (d) => {
+    let parseRow = (d, i) => {
       let tweet = {}
 
       tweet.isCenter = d.center == '1'
       tweet.date = d3.time.format('%d.%m.%Y').parse(d.date)
       tweet.lng = +(d.long.replace(',', '.'))
       tweet.lat = +(d.lat.replace(',', '.'))
+      tweet.id = i
 
       return tweet
     }
