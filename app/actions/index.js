@@ -43,8 +43,6 @@ export function fetchTweets() {
                       sortedTweets.slice(Math.floor(l / 2), l-1)
 
       shouldFetchOtherData = !shouldFetchOtherData
-
-      console.log(shouldFetchOtherData)
       dispatch(receiveTweets(sortedTweets))
     })
   }

@@ -2,15 +2,16 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import d3 from 'd3'
 
+
+const MIN_BRUSH = 50
+
 let TweetBrush = React.createClass({
 
   componentDidMount() {
-    // console.log('init')
     this.initBrush()
   },
 
   componentDidUpdate(nextProps) {
-    // console.log('props')
     let shouldAnimateEnter = nextProps.tweets.length != this.props.tweets.length
     this.componentUpdate(shouldAnimateEnter)  
   },
@@ -54,11 +55,22 @@ let TweetBrush = React.createClass({
     context.append('g')
       .attr('class', 'brush')
 
-    this.setState({context, brush, container, x, y, width, height})
+    this.setState({context, brush, container, x, y, width, height}, this.onBrush)
   },
 
   onBrush() {
-    let { brush } = this.state
+    let { brush, x } = this.state
+    let [x1, x2] = brush.extent()
+
+    if (brush.empty()) {
+      
+    }
+
+    if (Math.abs(x(x1) - x(x2)) < MIN_BRUSH) {
+      x1 = x.invert(Math.min(x.range()[1] - MIN_BRUSH, x(x1)))
+      brush.extent([x1, x.invert(x(x1)+MIN_BRUSH)])
+    }
+
     this.props.onBrushChange(brush.extent())
   },
 
@@ -87,6 +99,7 @@ let TweetBrush = React.createClass({
       let zeroes = data.map((d) => ({date: d.date, center: 0, periphery: 0}))
       chart1.datum(zeroes).attr('d', area1)
       chart2.datum(zeroes).attr('d', area2)
+      brush.extent(x.domain())
     }
 
     chart1.datum(data)
