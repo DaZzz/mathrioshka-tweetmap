@@ -16,6 +16,8 @@ function receiveTweets(tweets) {
   }
 }
 
+
+let shouldFetchOtherData = false
 export function fetchTweets() {
   return (dispatch) => {
     dispatch(requestTweets())
@@ -35,6 +37,14 @@ export function fetchTweets() {
     // Usualy they return promise here
     dsv(DATA, parseRow, (error, tweets) => {
       let sortedTweets = tweets.sort((a, b) => a.date - b.date)
+      let l = sortedTweets.length 
+      sortedTweets = !shouldFetchOtherData ? 
+                      sortedTweets.slice(0, Math.floor(l / 2)) :
+                      sortedTweets.slice(Math.floor(l / 2), l-1)
+
+      shouldFetchOtherData = !shouldFetchOtherData
+
+      console.log(shouldFetchOtherData)
       dispatch(receiveTweets(sortedTweets))
     })
   }

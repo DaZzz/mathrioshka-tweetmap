@@ -84,7 +84,7 @@ let TweetMap = React.createClass({
           .attr('cy', 0)
           .style('fill', (d) => d.isCenter ? 'blue' : 'red')
           .transition()
-            .duration(1)
+            .duration(10)
           .each('end', function (d) {
             d3.select(this).attr('class', 'enter')
           })
