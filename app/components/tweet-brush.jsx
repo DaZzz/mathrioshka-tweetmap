@@ -60,6 +60,14 @@ let TweetBrush = React.createClass({
       .append('path')
       .attr('class', 'chart-2')
 
+    // Baseline
+    context.append('rect')
+      .attr('class', 'baseline')
+      .attr('width', width)
+      .attr('height', 2)
+      .attr('y', margin.top + height/2 - 1)
+      .attr('x', margin.left)
+
     // Brush
     context.append('g')
       .attr('class', 'brush')
@@ -116,6 +124,7 @@ let TweetBrush = React.createClass({
       .attr('d', area2)
 
     let h = height + margin.top + margin.bottom
+
     context.select('g.brush')
         .call(brush)
       .selectAll('rect')
@@ -131,7 +140,7 @@ let TweetBrush = React.createClass({
         .append('rect')
         .attr('class', 'handle')
         .attr('height', h)
-        .attr('width', 2)
+        .attr('width', 1)
 
     resize.selectAll('.corner')
         .data([1])
