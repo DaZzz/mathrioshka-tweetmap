@@ -29,8 +29,8 @@ let TweetBrush = React.createClass({
     let margin = {
       top: 20,
       bottom: 20,
-      left: 20,
-      right: 20
+      left: 50,
+      right: 50
     }
 
     let width = container.offsetWidth - margin.left - margin.right
@@ -47,11 +47,24 @@ let TweetBrush = React.createClass({
     let context = d3.select(container).append('svg')
       .attr('class', 'brush-context')
 
+    // Clip
+    context.append('clipPath')
+        .attr('id', 'brushclip')
+      .append('rect')
+        .attr('y', 0)
+        .attr('height', height + margin.left + margin.right)
+
     // Chart 1
     let chart1 = context.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .append('path')
       .attr('class', 'chart-1')
+
+    let chart10 = context.append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .attr('clip-path', 'url(#brushclip)')
+      .append('path')
+      .attr('class', 'chart-10')
 
     // Chart 2
     let chart2 = context
@@ -59,6 +72,12 @@ let TweetBrush = React.createClass({
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .append('path')
       .attr('class', 'chart-2')
+
+    let chart20 = context.append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+      .attr('clip-path', 'url(#brushclip)')
+      .append('path')
+      .attr('class', 'chart-20')
 
     // Baseline
     context.append('rect')
@@ -78,14 +97,17 @@ let TweetBrush = React.createClass({
   },
 
   onBrush() {
-    let { brush, x } = this.state
+    let { brush, x, context, height, width, margin } = this.state
     let [x1, x2] = brush.extent()
 
     if (Math.abs(x(x1) - x(x2)) < MIN_BRUSH) {
       x1 = x.invert(Math.min(x.range()[1] - MIN_BRUSH, x(x1)))
-      brush.extent([x1, x.invert(x(x1)+MIN_BRUSH)])
+      x2 = x.invert(x(x1)+MIN_BRUSH)
+      brush.extent([x1, x2])
     }
 
+    this.brushClip(x1, x2)
+    this.brushLabels(x1, x2)
     this.props.onBrushChange(brush.extent())
   },
 
@@ -105,21 +127,36 @@ let TweetBrush = React.createClass({
       .y1((d) => height - y(d.periphery))
       .y0(height * 0.5)
 
-    let chart1 = context.select('.chart-1')
-    let chart2 = context.select('.chart-2')
+    let chart1  = context.select('.chart-1')
+    let chart10 = context.select('.chart-10')
+    let chart2  = context.select('.chart-2')
+    let chart20 = context.select('.chart-20')
 
     if (shouldAnimateEnter) {
       let zeroes = data.map((d) => ({date: d.date, center: 0, periphery: 0}))
       chart1.datum(zeroes).attr('d', area1)
+      chart10.datum(zeroes).attr('d', area1)
       chart2.datum(zeroes).attr('d', area2)
+      chart20.datum(zeroes).attr('d', area2)
       brush.extent(x.domain())
+      let [x1, x2] = brush.extent()
+      this.brushClip(x1, x2)
+      this.brushLabels(x1, x2)
     }
 
     chart1.datum(data)
       .transition()
       .attr('d', area1)
 
+    chart10.datum(data)
+      .transition()
+      .attr('d', area1)
+
     chart2.datum(data)
+      .transition()
+      .attr('d', area2)
+
+    chart20.datum(data)
       .transition()
       .attr('d', area2)
 
@@ -154,6 +191,36 @@ let TweetBrush = React.createClass({
     context.select('.resize.w .corner')
         .attr('points', (d, i) => `${0},${h} ${0},${h-10} ${-10},${h}`)
   },
+
+  // Draw brush labels
+  brushLabels(x1, x2) {
+    let {context, height, margin} = this.state
+
+    let format = d3.time.format('%-d %b')
+    let labels = ['e', 'w'].map((cl) => context.select(`.resize.${cl}`).selectAll('.label'))
+
+    labels.forEach((l, i) => {
+      l.data([i ? x1 : x2]).enter()
+        .append('text')
+        .attr('class', 'label')
+        .attr('font-size', 12)
+        .attr('y', height + margin.top)
+        .attr('font-family', 'sans-serif')
+        .attr('x', i ? -5 : 5)
+        .attr('text-anchor', i ? 'end' : 'start')
+
+      l.text((date) => format(date))
+    })
+  },
+
+  brushClip(x1, x2) {
+    let {context, width, x} = this.state
+
+    context.select('#brushclip').select('rect')
+      .attr('x', isNaN(x(x1)) ? 0 : x(x1))
+      .attr('width', isNaN(x(x2)) ? width : x(x2) - x(x1))
+  }
+
 })
 
 export default TweetBrush
