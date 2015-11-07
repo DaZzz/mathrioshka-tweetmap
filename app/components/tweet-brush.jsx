@@ -148,18 +148,22 @@ let TweetBrush = React.createClass({
 
     chart1.datum(data)
       .transition()
+      .duration(400)
       .attr('d', area1)
 
     chart10.datum(data)
       .transition()
+      .duration(400)
       .attr('d', area1)
 
     chart2.datum(data)
       .transition()
+      .duration(400)
       .attr('d', area2)
 
     chart20.datum(data)
       .transition()
+      .duration(400)
       .attr('d', area2)
 
     let h = height + margin.top + margin.bottom
