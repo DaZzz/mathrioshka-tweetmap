@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import d3 from 'd3'
 
 
-const MIN_BRUSH = 50
+const MIN_BRUSH = 30
 
 let TweetBrush = React.createClass({
 
@@ -232,6 +232,8 @@ let TweetBrush = React.createClass({
     let centerCount = _.sum(_.map(data, 'center'))
     let peripheryCount = _.sum(_.map(data, 'periphery'))
 
+    if (isNaN(x(x1)) || isNaN(x(x2))) return;
+
     let cc = context.selectAll('.center-count')
       .data([centerCount])
 
@@ -239,21 +241,8 @@ let TweetBrush = React.createClass({
       .append('text')
       .attr('class', 'center-count')
 
-    cc.text((d) => d)
-      // .attr('font-size', function (d) {
-      //   console.log(d, this.getBBox().width)
-
-      //   let fs = d3.select(this).attr('font-size')
-      //   console.log(fs, Math.max(24, Math.min(42,
-      //     (x(x2) - x(x1) - 8) / this.getComputedTextLength() * fs)) + 'px')
-      //   fs = isNaN(fs) ? 24 : fs
-
-
-      //   return Math.max(24, Math.min(42,
-      //     (x(x2) - x(x1) - 8) / this.getComputedTextLength() * fs)) + 'px'
-      // })
-      // .attr('dy', '1em')
-      .attr('font-size', 24)
+    cc.text('000')
+      .attr('font-size', 1)
       .attr('text-anchor', 'middle')
       .attr('font-family', 'sans-serif')
       .attr('x', margin.left + x(x1) + (x(x2) - x(x1)) / 2)
@@ -266,12 +255,42 @@ let TweetBrush = React.createClass({
       .append('text')
       .attr('class', 'periphery-count')
 
-    pc.text((d) => d)
-      .attr('font-size', 24)
+    pc.text('000')
+      .attr('font-size', 1)
       .attr('text-anchor', 'middle')
       .attr('font-family', 'sans-serif')
       .attr('x', margin.left + x(x1) + (x(x2) - x(x1)) / 2)
-      .attr('y', function() { return height / 2 + this.getBBox().height + margin.top; })
+
+    let tc = context.selectAll('.total-count')
+      .data([peripheryCount + centerCount])
+
+    tc.enter()
+      .append('text')
+      .attr('class', 'total-count')
+
+    tc.text('000')
+      .attr('font-size', 1)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'sans-serif')
+      .attr('x', margin.left + x(x1) + (x(x2) - x(x1)) / 2)
+      .attr('y', height + margin.top + margin.bottom - 10)
+
+    let minSize = _.min(_.map([pc, cc, tc], (selection) => {
+      let textLength = selection.node().getComputedTextLength()
+      return Math.max(12, Math.min(32, (x(x2) - x(x1) - 8) / textLength))
+    }))
+
+    cc.text(d => d)
+      .attr('font-size', minSize + 'px')
+
+    pc.text(d => d)
+      .attr('font-size', minSize + 'px')
+      .attr('y', function() { return height / 2 + this.getBBox().height + margin.top })
+
+    tc.text(d => d)
+      .attr('font-size', minSize + 'px')
+
+
 
   }
 })
