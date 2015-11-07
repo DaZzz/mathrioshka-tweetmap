@@ -84,8 +84,6 @@ let TweetMap = React.createClass({
         marker
           .each(transform)
           .transition()
-          //.duration(10)
-          //.each('end', function() {d3.select(this).attr('class', 'enter')})
           .attr('class', 'enter')
 
         // Remove
