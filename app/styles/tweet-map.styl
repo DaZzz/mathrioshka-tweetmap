@@ -5,16 +5,15 @@
 .svg-overlay
   position absolute
 
-  svg
+  & > svg
     position absolute
-
-  circle
     transform scale(0)
     transition transform 0.4s ease
 
     &.enter
       transform scale(1)
 
+  circle
     &.center
       background-color red
 
