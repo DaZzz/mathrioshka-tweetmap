@@ -17,12 +17,12 @@ let App = React.createClass({
 
     return (
       <div className='tweet-map-application'>
-        <button onClick={() => this.props.dispatch(fetchTweets())}> 
-          { tweets.isFetchig ? 'Fetching...' : 'Refetch' } 
+        <button className='refetch' onClick={() => this.props.dispatch(fetchTweets())}>
+          { tweets.isFetchig ? 'Fetching...' : 'Fetch new data' }
         </button>
         <TweetMap tweets={tweets.all} bounds={bounds}/>
         <TweetBrush tweets={tweets.byDate} onBrushChange={(bounds) => dispatch(setBounds(bounds))}/>
-      </div>    
+      </div>
     )
   },
 

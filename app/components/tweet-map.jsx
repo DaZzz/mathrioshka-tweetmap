@@ -58,10 +58,10 @@ let TweetMap = React.createClass({
 
       overlay.draw = function () {
         let projection = this.getProjection()
-        let data = _this.props.tweets 
+        let data = _this.props.tweets
 
         if (_this.props.bounds.length > 0) {
-          data =_.filter(_this.props.tweets, 
+          data =_.filter(_this.props.tweets,
                  (d) => (d.date >=_this.props.bounds[0] && d.date <=_this.props.bounds[1]))
         }
 
@@ -82,14 +82,14 @@ let TweetMap = React.createClass({
           .attr('r', 10)
           .attr('cx', 0)
           .attr('cy', 0)
-          .style('fill', (d) => d.isCenter ? 'blue' : 'red')
+          .style('fill', (d) => d.isCenter ? '#D88329' : '#0097DC')
           .transition()
             .duration(10)
           .each('end', function (d) {
             d3.select(this).attr('class', 'enter')
           })
 
-        // Update 
+        // Update
         marker
           .each(transform)
           .transition()
@@ -103,7 +103,7 @@ let TweetMap = React.createClass({
           .select('circle')
           .attr('class', '')
           .transition()
-        
+
         marker.exit()
           .transition()
           .remove()

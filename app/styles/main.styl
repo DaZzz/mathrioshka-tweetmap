@@ -10,4 +10,31 @@ html, body, #app, .tweet-map-application
 .tweet-map-application
   position relative
 
+.refetch
+  position absolute
+  display block
+  bottom 50px
+  left 50%
+  margin-left -100px
+  width 200px
+  z-index 10
+  background rgba(0,0,0,0.5)
+  padding 5px
+  font-size 24px
+  color white
+  border-radius 2px
+  border none
+  cursor pointer
+  box-shadow 0 1px 4px rgba(0,0,0,.3)
+
+  &:hover
+    background rgba(0,0,0,0.6)
+
+  &:active
+    background rgba(0,0,0,0.6)
+    box-shadow 0 1px 8px rgba(0,0,0,.7)
+
+  &:active,
+  &:focus
+    outline none
 
