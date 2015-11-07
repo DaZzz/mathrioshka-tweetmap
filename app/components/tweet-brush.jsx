@@ -108,6 +108,7 @@ let TweetBrush = React.createClass({
 
     this.brushClip(x1, x2)
     this.brushLabels(x1, x2)
+    this.brushText(x1, x2)
     this.props.onBrushChange(brush.extent())
   },
 
@@ -142,6 +143,7 @@ let TweetBrush = React.createClass({
       let [x1, x2] = brush.extent()
       this.brushClip(x1, x2)
       this.brushLabels(x1, x2)
+      this.brushText(x1, x2)
     }
 
     chart1.datum(data)
@@ -213,14 +215,65 @@ let TweetBrush = React.createClass({
     })
   },
 
+
+  // Draw clipping for brushed area
   brushClip(x1, x2) {
     let {context, width, x} = this.state
 
     context.select('#brushclip').select('rect')
       .attr('x', isNaN(x(x1)) ? 0 : x(x1))
       .attr('width', isNaN(x(x2)) ? width : x(x2) - x(x1))
-  }
+  },
 
+  // Add text to brush
+  brushText(x1, x2) {
+    let {context, x, height, margin} = this.state
+    let data =_.filter(this.props.tweets, (d) => (d.date >= x1 && d.date <= x2))
+    let centerCount = _.sum(_.map(data, 'center'))
+    let peripheryCount = _.sum(_.map(data, 'periphery'))
+
+    let cc = context.selectAll('.center-count')
+      .data([centerCount])
+
+    cc.enter()
+      .append('text')
+      .attr('class', 'center-count')
+
+    cc.text((d) => d)
+      // .attr('font-size', function (d) {
+      //   console.log(d, this.getBBox().width)
+
+      //   let fs = d3.select(this).attr('font-size')
+      //   console.log(fs, Math.max(24, Math.min(42,
+      //     (x(x2) - x(x1) - 8) / this.getComputedTextLength() * fs)) + 'px')
+      //   fs = isNaN(fs) ? 24 : fs
+
+
+      //   return Math.max(24, Math.min(42,
+      //     (x(x2) - x(x1) - 8) / this.getComputedTextLength() * fs)) + 'px'
+      // })
+      // .attr('dy', '1em')
+      .attr('font-size', 24)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'sans-serif')
+      .attr('x', margin.left + x(x1) + (x(x2) - x(x1)) / 2)
+      .attr('y', height / 2 + margin.top - 10)
+
+    let pc = context.selectAll('.periphery-count')
+      .data([peripheryCount])
+
+    pc.enter()
+      .append('text')
+      .attr('class', 'periphery-count')
+
+    pc.text((d) => d)
+      .attr('font-size', 24)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'sans-serif')
+      .attr('x', margin.left + x(x1) + (x(x2) - x(x1)) / 2)
+      .attr('y', function() { return height / 2 + this.getBBox().height + margin.top; })
+
+  }
 })
 
 export default TweetBrush
