@@ -1,6 +1,6 @@
 ## Тестовое задание
 
-[Задание](https://mathrioshka.atlassian.net/wiki/download/attachments/10780679/Test001-histogram.jpg?version=1&modificationDate=1426772562043&api=v2)
+![Задание](https://mathrioshka.atlassian.net/wiki/download/attachments/10780679/Test001-histogram.jpg?version=1&modificationDate=1426772562043&api=v2)
 
 
 На изображении представлен макет интерфейса, который нужно сделать интерактивным.
